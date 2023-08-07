@@ -29,12 +29,14 @@ const Input = ({ id, cb }) => {
   const [phone, setPhone] = useState("");
   const [people, setPeople] = useState("");
   const [error, setError] = useState(false);
+  const [triggerSubmit, setTriggerSubmit] = useState(false);
 
   const addToWaitlist = () => {
     console.log("Added to waitlist", id);
     cb();
     if (!name || !phone || !people) {
       setError(true);
+      setTriggerSubmit(true);
       return;
     }
     const jsonData = {
@@ -53,6 +55,7 @@ const Input = ({ id, cb }) => {
     setEmail("");
     setPhone("");
     setPeople("");
+    setTriggerSubmit(false);
   };
 
   return (
@@ -62,6 +65,7 @@ const Input = ({ id, cb }) => {
           id="name"
           required
           label="Name"
+          error={name.length === 0 && triggerSubmit}
           variant="standard"
           value={name}
           onChange={(event) => {
@@ -85,6 +89,7 @@ const Input = ({ id, cb }) => {
           onChange={(event) => {
             setPhone(event.target.value);
           }}
+          error={phone.length === 0 && triggerSubmit}
           label="Phone Number"
           variant="standard"
         />
@@ -95,6 +100,7 @@ const Input = ({ id, cb }) => {
           onChange={(event) => {
             setPeople(event.target.value);
           }}
+          error={people.length === 0 && triggerSubmit}
           required
           label="People"
           variant="standard"
@@ -111,7 +117,7 @@ const Items = ({ data, setId }) => {
     data.map((item, index) => {
       if (index === data.length - 1) setId(index + 2);
       return (
-        <div class="table">
+        <div className="table">
           <Item
             index={index}
             name={item.name}
