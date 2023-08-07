@@ -33,7 +33,6 @@ const Input = ({ id, cb }) => {
 
   const addToWaitlist = () => {
     console.log("Added to waitlist", id);
-    cb();
     if (!name || !phone || !people) {
       setError(true);
       setTriggerSubmit(true);
@@ -56,6 +55,9 @@ const Input = ({ id, cb }) => {
     setPhone("");
     setPeople("");
     setTriggerSubmit(false);
+    setTimeout(() => {
+      cb();
+    }, 2000);
   };
 
   return (
