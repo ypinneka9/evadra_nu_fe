@@ -3,7 +3,7 @@ import "./Body.css";
 import TextField from "@mui/material/TextField";
 import ComplexButton from "./ComplexButton";
 
-const url = "http://localhost:8080/persons";
+const url = "https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons";
 
 export const Body = () => {
   const [id, setId] = useState("");
@@ -46,7 +46,7 @@ const Input = ({ id, cb }) => {
       phone: phone,
       people: people,
     };
-    fetch("http://localhost:8080/persons", {
+    fetch("https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons", {
       method: "POST",
       mode: "cors",
       body: JSON.stringify(jsonData), // body data type must match "Content-Type" header
