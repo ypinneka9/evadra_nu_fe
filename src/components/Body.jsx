@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./Body.css";
 import TextField from "@mui/material/TextField";
 import ComplexButton from "./ComplexButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const url = "https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons";
+const remoteUrl =
+  "https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons";
+// const localUrl = "http://localhost:8080/persons";
 
 export const Body = () => {
   const [id, setId] = useState("");
   const [reloadCount, setReloadCount] = useState(0);
-  const { data, isPending, error } = useFetch(url, reloadCount);
+  const { data, isPending, error } = useFetch(remoteUrl, reloadCount);
   const cb = () => {
     setReloadCount(reloadCount + 1);
   };
@@ -17,7 +20,7 @@ export const Body = () => {
     <div className="m-block">
       <Input id={id} cb={cb} />
       <div>
-        <Items data={data} setId={setId} />
+        <Items data={data} setId={setId} cb={cb} />
       </div>
     </div>
   );
@@ -28,7 +31,7 @@ const Input = ({ id, cb }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [people, setPeople] = useState("");
-  const [error, setError] = useState(false);
+  const [_, setError] = useState(false);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
 
   const addToWaitlist = () => {
@@ -45,7 +48,7 @@ const Input = ({ id, cb }) => {
       phone: phone,
       people: people,
     };
-    fetch("https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons", {
+    fetch(remoteUrl, {
       method: "POST",
       mode: "cors",
       body: JSON.stringify(jsonData), // body data type must match "Content-Type" header
@@ -62,6 +65,7 @@ const Input = ({ id, cb }) => {
 
   return (
     <div className="input-block">
+      <span className="heading-body">Ready to be in the waitlist ?</span>
       <div className="input">
         <TextField
           id="name"
@@ -113,7 +117,7 @@ const Input = ({ id, cb }) => {
   );
 };
 
-const Items = ({ data, setId }) => {
+const Items = ({ data, setId, cb }) => {
   return (
     data &&
     data.map((item, index) => {
@@ -126,6 +130,7 @@ const Items = ({ data, setId }) => {
             email={item.email}
             phone={item.phone}
             people={item.people}
+            cb={cb}
           />
         </div>
       );
@@ -133,7 +138,15 @@ const Items = ({ data, setId }) => {
   );
 };
 
-const Item = ({ index, name, email, phone, people }) => {
+const deleteEl = (id) => {
+  fetch(remoteUrl + id, {
+    method: "DELETE",
+  })
+    .then((res) => res.text()) // or res.json()
+    .then((res) => console.log(res));
+};
+
+const Item = ({ index, name, email, phone, people, cb }) => {
   return (
     <>
       <div>{index + 1}</div>
@@ -141,6 +154,14 @@ const Item = ({ index, name, email, phone, people }) => {
       <div>{email}</div>
       <div>{phone}</div>
       <div>{people}</div>
+      <div>
+        <DeleteIcon
+          onClick={() => {
+            deleteEl(index);
+            cb();
+          }}
+        />
+      </div>
     </>
   );
 };

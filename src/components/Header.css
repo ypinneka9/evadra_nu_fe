@@ -1,0 +1,16 @@
+.about-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  justify-content: end;
+}
+
+.call-me {
+  font-family: cursive;
+  font-size: smaller;
+  color: #666;
+}
+
+.header {
+  margin-bottom: 3em;
+}
