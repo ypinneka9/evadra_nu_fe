@@ -139,7 +139,7 @@ const Items = ({ data, setId, cb }) => {
 };
 
 const deleteEl = (id) => {
-  fetch(remoteUrl + id, {
+  fetch(remoteUrl + "/" + id, {
     method: "DELETE",
   })
     .then((res) => res.text()) // or res.json()
