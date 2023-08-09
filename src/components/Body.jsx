@@ -4,14 +4,14 @@ import TextField from "@mui/material/TextField";
 import ComplexButton from "./ComplexButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const remoteUrl =
-  "https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons";
-// const localUrl = "http://localhost:8080/persons";
+// const remoteUrl =
+//   "https://peaceful-meadow-33167-213d6a56c227.herokuapp.com/persons";
+const localUrl = "http://localhost:8080/persons";
 
-export const Body = () => {
+export const Body = ({ adminObj }) => {
   const [id, setId] = useState("");
   const [reloadCount, setReloadCount] = useState(0);
-  const { data, isPending, error } = useFetch(remoteUrl, reloadCount);
+  const { data, isPending, error } = useFetch(localUrl, reloadCount);
   const cb = () => {
     setReloadCount(reloadCount + 1);
   };
@@ -20,7 +20,7 @@ export const Body = () => {
     <div className="m-block">
       <Input id={id} cb={cb} />
       <div>
-        <Items data={data} setId={setId} cb={cb} />
+        <Items data={data} setId={setId} cb={cb} adminObj={adminObj} />
       </div>
     </div>
   );
@@ -48,7 +48,7 @@ const Input = ({ id, cb }) => {
       phone: phone,
       people: people,
     };
-    fetch(remoteUrl, {
+    fetch(localUrl, {
       method: "POST",
       mode: "cors",
       body: JSON.stringify(jsonData), // body data type must match "Content-Type" header
@@ -117,13 +117,14 @@ const Input = ({ id, cb }) => {
   );
 };
 
-const Items = ({ data, setId, cb }) => {
+const Items = ({ data, setId, cb, adminObj }) => {
+  const lastColumnStyles = `table ${adminObj.admin ? "dynamic" : ""}`;
   return (
     data &&
     data.map((item, index) => {
       if (index === data.length - 1) setId(index + 2);
       return (
-        <div className="table">
+        <div className={lastColumnStyles}>
           <Item
             index={index}
             name={item.name}
@@ -131,6 +132,7 @@ const Items = ({ data, setId, cb }) => {
             phone={item.phone}
             people={item.people}
             cb={cb}
+            adminObj={adminObj}
           />
         </div>
       );
@@ -139,14 +141,14 @@ const Items = ({ data, setId, cb }) => {
 };
 
 const deleteEl = (id) => {
-  fetch(remoteUrl + "/" + id, {
+  fetch(localUrl + "/" + id, {
     method: "DELETE",
   })
     .then((res) => res.text()) // or res.json()
     .then((res) => console.log(res));
 };
 
-const Item = ({ index, name, email, phone, people, cb }) => {
+const Item = ({ index, name, email, phone, people, cb, adminObj }) => {
   return (
     <>
       <div>{index + 1}</div>
@@ -154,14 +156,19 @@ const Item = ({ index, name, email, phone, people, cb }) => {
       <div>{email}</div>
       <div>{phone}</div>
       <div>{people}</div>
-      <div>
-        <DeleteIcon
-          onClick={() => {
-            deleteEl(index);
-            cb();
-          }}
-        />
-      </div>
+      {adminObj.admin && (
+        <div>
+          <DeleteIcon
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              deleteEl(index);
+              setTimeout(() => {
+                cb();
+              }, 2000);
+            }}
+          />
+        </div>
+      )}
     </>
   );
 };

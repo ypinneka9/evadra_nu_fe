@@ -28,7 +28,8 @@
   font-size: large;
 }
 
-.table > div:nth-last-child(1) {
+.table,
+.dynamic > div:nth-last-child(1) {
   background-color: white;
   color: #005955;
 }
